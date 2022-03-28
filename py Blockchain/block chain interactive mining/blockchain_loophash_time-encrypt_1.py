@@ -56,7 +56,7 @@ class Block():
                                                          #gives encrypted hash text with Hash:
 class BlockChain():
     
-    difficulty = 3  #produces 4 0s at the front of the hash
+    difficulty = 4  #produces 4 0s at the front of the hash
     
     
     def __init__(self):
