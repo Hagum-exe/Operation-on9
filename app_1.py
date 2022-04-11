@@ -1,14 +1,15 @@
 from flask import Flask, render_template, flash, redirect, url_for, session,  request, logging
 from flask_mysqldb import MySQL
 import sys
-
+from sqlhelpers import *
+from forms import *
 #import password
 with open('sql_pw.txt') as f:
     pw = f.read()
 
 
 #import coinlog data of coins
-with open('coinlog_on9venv.txt') as f:
+with open('coinlog.txt') as f:
     coinlog = f.read()
 #
 
@@ -27,6 +28,20 @@ app.config["MYSQL_CURSORCLASS"] = "DictCursor"
 
 mysql = MySQL(app)
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegisterForm(request.form)
+    return render_template('register.html')
+    users = Table('users', 'name', 'email', 'username', 'password')
+
+    if request.method == 'POST' and form.validate():
+        pass
+    return render_template('register.html')
+
+
+   
+   
+   
 @app.route("/")
 def index():
     return render_template('index.html')
