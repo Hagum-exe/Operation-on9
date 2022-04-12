@@ -1,1 +1,12 @@
 <h1>Register</h1>
+
+<form method='POST' action="">
+    <input value={{request.form.name}}><lable>Full Name</lable>
+    <input value={{request.form.email}}><lable>Email</lable>
+    <input value={{request.form.username}}><lable>Username</lable>
+    <input value={{request.form.password}}><lable>Password</lable>
+    <input value={{request.form.confirm}}><lable>Confirmed Password</lable>
+
+    <button type="submit">Register</button>
+
+</form> 

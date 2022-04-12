@@ -36,7 +36,7 @@ def register():
 
     if request.method == 'POST' and form.validate():
         pass
-    return render_template('register.html')
+    return render_template('register.html', form=form)
 
 
    
