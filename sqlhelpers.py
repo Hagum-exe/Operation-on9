@@ -1,6 +1,6 @@
 
 from app_1 import mysql, session
-from blockchain_PIN_validator_1 import Block, BlockChain
+from blockchain_PIN_validator_1 import Block, Blockchain
 
 #custom exceptions for transaction errors
 class InvalidTransactionException(Exception): pass
@@ -99,3 +99,4 @@ def isnewuser(username):
     usernames = [user.get('username') for user in data]
 
     return False if username in usernames else True
+
