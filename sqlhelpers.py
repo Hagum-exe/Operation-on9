@@ -1,10 +1,10 @@
 
 from app_1 import mysql, session
-from blockchain_PIN_validator_1 import Block, Blockchain
-
+from blockchain_PIN_validator_1 import Block, BlockChain
+import MySQLdb 
 #custom exceptions for transaction errors
-class InvalidTransactionException(Exception): pass
-class InsufficientFundsException(Exception): pass
+#class InvalidTransactionException(Exception): pass
+#class InsufficientFundsException(Exception): pass
 
 #what a mysql table looks like. Simplifies access to the database 'crypto'
 class Table():
@@ -67,10 +67,10 @@ class Table():
         for arg in args: #convert data into string mysql format
             data += "\"%s\"," %(arg)
 
-        cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO %s%s VALUES(%s)" %(self.table, self.columns, data[:len(data)-1]))
-        mysql.connection.commit()
-        cur.close()
+        cursor = mysql.cursor()
+        cursor.execute("INSERT INTO %s%s VALUES(%s)" %(self.table, self.columns, data[:len(data)-1]))
+        mysql.commit()
+        cursor.close()
 
 #execute mysql code from python
 def sql_raw(execution):
