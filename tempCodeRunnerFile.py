@@ -1,1 +1,1 @@
-t(var1 VARCHAR(50), var2 VARCHAR(50))")
+SQLdb

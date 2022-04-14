@@ -1,5 +1,5 @@
 
-from app_1 import mysql, session
+from app_test import mysql, session
 from blockchain_PIN_validator_1 import Block, BlockChain
 import MySQLdb 
 #custom exceptions for transaction errors

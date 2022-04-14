@@ -1,6 +1,7 @@
 from flask import Flask , render_template, flash, redirect, url_for, session,  request, logging
 from passlib.hash import sha256_crypt
-from flask_mysqldb import MySQLdb
+from flask_mysqldb import MySQL
+import mysql.connector
 #from functools import wraps
 
 #import other functions and classes
