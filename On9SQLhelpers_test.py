@@ -7,10 +7,10 @@ from SQLconnection_test import SQLdb
 
 class Table():
   
-    def __init__(self, table_name, *args):
+    def __init__(self, table_name, *columns):
         self.table = table_name
-        self.columns = "(%s)" %",".join(args)
-        self.columnsList = args
+        self.columns = "(%s)" %",".join(columns)
+        self.columnsList = columns
         
         
     def insert(self, *data):
