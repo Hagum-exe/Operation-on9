@@ -12,10 +12,11 @@ SQLdb = mysql.connector.connect(
 
 def main():
     from sql_functions import Table
-    test2 = Table('test2', 'name', 'email')    #initialize 'Table' with 'test2'
-    test2.insert('joe', 'joemama.email')
-  
+    #from sqlhelpers import Table
+    users = Table('users', 'name', 'email', 'username', 'password')    #initialize 'Table' with 'users'
+    #users.insert('joeman', 'joemanmama.email', 'on9-joeman', 'pw.joemanison9')
+    print(users.selectOne('name', 'joe'))
 if __name__ == "__main__":
     main()
     
-    
+  
