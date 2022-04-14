@@ -1,14 +1,15 @@
 from flask_mysqldb import MySQLdb
+import mysql.connector
 
 
-database = MySQLdb.Connect(
-    host = 'localhost',
-    user = 'root',
+database = mysql.connector.connect(          # using 'mysql.connector'
+    host = 'localhost',  #host server name
+    user = 'root',     #username 
     passwd = 'dwjk7158',
-    db = 'crypto')
+    db = 'crypto')    #database name 
 
 cursor = database.cursor()
-cursor.execute("SELECT * FROM users WHERE name = 'joe'")
+cursor.execute("SELECT * FROM users WHERE name = 'joe'")  #SQL commands inserted into CMD.prompt
 results = cursor.fetchall()
-cursor.close()
+cursor.close()                                              
 print(results)
