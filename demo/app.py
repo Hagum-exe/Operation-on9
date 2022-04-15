@@ -5,7 +5,7 @@ from flask_mysqldb import MySQL
 from functools import wraps
 
 #import other functions and classes
-from sqlhelpers import *
+from demo_files.sqlhelpers import *
 from forms import *
 
 #other dependencies

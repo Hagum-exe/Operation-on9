@@ -1,7 +1,7 @@
 #from app_test import database
 import mysql.connector
 from tkinter import END  
-from SQLconnection_test import SQLdb
+from Test.SQLconnection_test import SQLdb
 
 
 

@@ -2,7 +2,7 @@
 #from app_test import mysql, session
 from blockchain_PIN_validator_1 import Block, BlockChain
 import MySQLdb
-from SQLconnection_test import SQLdb
+from Test.SQLconnection_test import SQLdb
 
 #custom exceptions for transaction errors
 #class InvalidTransactionException(Exception): pass
