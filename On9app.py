@@ -6,6 +6,7 @@ from forms import *
 
 
 #login to mysql locolhost root user
+
 SQLdb = mysql.connector.connect(
     user = 'root',
     password = 'dwjk7158',
@@ -14,8 +15,8 @@ SQLdb = mysql.connector.connect(
 #
 
 
-
 def main():
+    
     from On9SQLhelpers import Table, isnewuser
     
     app = Flask(__name__)
