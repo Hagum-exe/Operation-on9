@@ -24,9 +24,6 @@ def main():
     @app.route("/register", methods = ['GET', 'POST'])
     def register():
         form = RegisterForm(request.form)
-        #users = Table('users', 'name', 'email', 'username', 'password')    #initialize 
-        #'Table' with 'users'
-        
         users = Table('users', 'name', 'email', 'username', 'password')
         
         
@@ -37,9 +34,17 @@ def main():
             username = form.username.data
             email = form.email.data
             name = form.name.data
-            users.insert(name, email, username, 'PW-Hash')
-            #make sure user does not already exist
-            return render_template('dashboard.html')
+            
+            if isnewuser(username) == True:
+            
+                password = sha256_crypt.encrypt (form.password.data)   #collect and encrypt password
+                users.insert(name, email, username, 'PW-Hash')     #log to MySQL database
+                return render_template('dashboard.html')
+        
+            else:
+                flash('User already exists', 'danger')
+                return render_template('register.html')
+        
         return render_template('register.html', form=form)
 
     
@@ -52,7 +57,7 @@ def main():
     
     
     
-    
+    app.secret_key = 'the secret key is secret'
     app.run(debug=True)  #run app
 
 

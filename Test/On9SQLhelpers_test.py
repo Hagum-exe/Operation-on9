@@ -1,7 +1,7 @@
 #from app_test import database
 import mysql.connector
 from tkinter import END  
-from Test.SQLconnection_test import SQLdb
+from SQLconnection_test import SQLdb
 
 
 
@@ -55,12 +55,25 @@ class Table():
         cursor = SQLdb.cursor()
         cursor.execute("DROP TABLE %s" %self.table)
         cursor.close()
+    
+    def selectColumn(self, columnName):
+        cursor = SQLdb.cursor()
+        cursor.execute("SELECT %s FROM %s" % (columnName, self.table))
+        result = cursor.fetchall()
+        cursor.close()
+        return result
+    
+    
+    
         
 def isnewuser(username):
     #access the users table and get all values from column "username"
     users = Table("users", "name", "email", "username", "password")
-    data = users.getall()
-    usernames = [user.get('username') for user in data]
-
-    return False if username in usernames else True
-
+    usernamesList = (users.selectColumn('username'))
+    
+    realUserName = tuple(map(str, username.split()))
+    
+    if realUserName in usernamesList: 
+        return False 
+    else: 
+        return True

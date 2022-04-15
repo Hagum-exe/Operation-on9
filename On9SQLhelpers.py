@@ -30,6 +30,14 @@ class Table():
         data = cursor.fetchall()
         return data
 
+    def selectColumn(self, columnName):
+        cursor = SQLdb.cursor()
+        cursor.execute("SELECT %s FROM %s" % (columnName, self.table))
+        result = cursor.fetchall()
+        cursor.close()
+        return result
+    
+    
     def selectOne(self, columnName, value):
         data = {}
         cursor = SQLdb.cursor()
@@ -59,8 +67,11 @@ class Table():
 def isnewuser(username):
     #access the users table and get all values from column "username"
     users = Table("users", "name", "email", "username", "password")
-    data = users.getall()
-    usernames = [user.get('username') for user in data]
-
-    return False if username in usernames else True
-
+    usernamesList = (users.selectColumn('username'))
+    
+    realUserName = tuple(map(str, username.split()))
+    
+    if realUserName in usernamesList: 
+        return False 
+    else: 
+        return True
