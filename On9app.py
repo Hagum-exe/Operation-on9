@@ -50,7 +50,13 @@ def main():
                     return render_template('login.html')
         return render_template('login.html')
  
-   
+    @app.route("/logout")
+    def logout():
+        session.clear()
+        flash('Logout Success', 'success')
+        return render_template('login.html')
+    
+    
     @app.route("/register", methods = ['GET', 'POST'])
     def register():
         form = RegisterForm(request.form)
@@ -76,6 +82,7 @@ def main():
                 return render_template('register.html')
         
         return render_template('register.html', form=form)
+   
 
     
     @app.route("/")
