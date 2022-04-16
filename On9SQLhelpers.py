@@ -1,8 +1,7 @@
 #from app_test import database
 import mysql.connector
 from tkinter import END  
-from On9app import SQLdb
-
+from login import SQLdb
 
 
 class Table():
@@ -42,12 +41,12 @@ class Table():
         data = {}
         cursor = SQLdb.cursor()
         results = cursor.execute('SELECT * FROM %s WHERE %s = "%s"' %(self.table, columnName, value))
-        
-        if results != None and results.count() > 0:
-            data = cursor.fetchone()
+        data = cursor.fetchall()
+        #if results != None and results.count() > 0:
+        #    data = cursor.fetchone()
             
-        else:
-            data = cursor.fetchall()    
+        #else:
+        #    data = cursor.fetchall()    
             
         cursor.close()
         return data
@@ -75,3 +74,16 @@ def isnewuser(username):
         return False 
     else: 
         return True
+    
+def lastBlockNum():
+    blockchain = Table('blockchain', 'number', 'hash', 'previous', 'data', 'nonce', 'datetime', 'PIN')
+    
+    blockNumbers = blockchain.selectColumn('number')
+
+    if not blockNumbers:
+        return 0
+    else:
+        blockNumber = int(str(blockNumbers[-1])[2])
+        return blockNumber
+
+   

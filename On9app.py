@@ -1,20 +1,9 @@
-import mysql.connector
+
 from flask import Flask , render_template, flash, redirect, url_for, session,  request, logging
 from passlib.hash import sha256_crypt
 
 from forms import *
-
-
-#login to mysql locolhost root user
-
-SQLdb = mysql.connector.connect(
-    user = 'root',
-    password = 'dwjk7158',
-    host = 'localhost',
-    database = 'crypto')
-#
-
-
+from On9SQLhelpers import *
 def main():
     
     from On9SQLhelpers import Table, isnewuser

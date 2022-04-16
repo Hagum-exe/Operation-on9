@@ -1,12 +1,17 @@
 #hash is encrypted data of previous_hash,number, data, nonce
 #each block consists of 4 data: previous_hash,number,nonce
 #.chain takes in all iterables and returns 1 iterable as output
-
+import time
 from hashlib import sha256   #library function for encryption 
 from itertools import chain
 from datetime import datetime
 
-import sys 
+from On9SQLhelpers import *
+
+minBlockNum = lastBlockNum() + 1
+#read from MySQL database 'crypto' table 'blockchain'
+
+
 
 #updatehash function
 #return encrypted data
@@ -23,16 +28,19 @@ def updatehash(*args):     #exchange args to 64 bit letters
 #Block function creating block
 #returns str(hash, previous_hash, data, nonce)
 class Block():
-    global Datetime 
+    #global Datetime 
+ 
     Datetime = datetime.now()
+    
     #consturctor called to creat an object IN the class Block
-    def __init__(self,number=0, previous_hash="0"*64, data=None, nonce=0, datetime=Datetime, PIN = updatehash(Datetime)):   #function1
+    
+    def __init__(self,number=0, previous_hash="0"*64, data=None, nonce=0, datetime=Datetime):   #function1
         self.data = data
         self.number = number
         self.previous_hash = previous_hash
         self.nonce = nonce
         self.datetime = datetime
-        self.PIN = PIN
+        
  
     #hash function to pass in number, data and nonce to 'updatehash' as arguments for encryption                            #function3
     #gives envrypted previous_hash, number and previous, data, nonce
@@ -42,10 +50,22 @@ class Block():
             self.previous_hash,
             self.data,
             self.nonce,
-            self.datetime,
-            self.PIN)
+            self.datetime,)
    
-    def __str__(self):                                                                                                      #function2
+    def PINhash(self):
+       return updatehash(self.nonce, self.datetime)
+       
+       
+           
+    def __str__(self):                                                                                                    #function2
+        blockchain = Table('blockchain', 'number', 'hash', 'previous', 'data', 'nonce', 'datetime', 'PIN')
+        blockchain.insert(self.number, self.hash(), self.previous_hash, self.data, self.nonce, str(self.datetime), self.PINhash())
+        
+       
+        
+        global blockNumber
+        blockNumber = self.number
+        
         return str("Block#: %s;\nHash: %s;\nPrevious: %s;\nData: %s;\nNonce: %s;\nDatetime: %s;\nPIN: %s;\n!\n" %(
             self.number,
             self.hash(),
@@ -53,7 +73,7 @@ class Block():
             self.data,
             self.nonce,
             str(self.datetime),
-            str(self.PIN)
+            self.PINhash()
             )
         )
                                                          #gives encrypted hash text with Hash:
@@ -97,7 +117,7 @@ class BlockChain():
 def datastore(max):
    
     DatabaseStr = ''
-    for i in range (1,max+1):
+    for i in range (minBlockNum,minBlockNum+max):
         data = '-on9_'+str(i)       #-on9_1    #-on9_2   #-on9_3
 
         DatabaseStr = DatabaseStr + data
@@ -120,20 +140,22 @@ def main():
     
     database = datastore(coins) #database is a list
     
-    number = 0
+    number = minBlockNum-1
     
     #assign each hash / block 's number
     for data in database: 
        number += 1
        block = Block(number, data=data)
        blockchain.mine(block)  #calling mine function to find previous block's hash
-        
+ 
     
     empty = ''
     
     for block in blockchain.chain:
         
-        empty = empty+str(block)
+        print(block)
+        print('Num:', blockNumber)
+        #empty = empty+str(block)
     #
     #blockchain.chain[2].data = 'New Data'
     #blockchain.mine(blockchain.chain[2])
@@ -141,15 +163,11 @@ def main():
     
     
     validity = str(blockchain.isValid()) #call 'isValid' function in blockchain class to check validity
-    
-    return str(f'{validity}!\n{empty}')
+    print(validity)
+    #return str(f'{validity}!\n{empty}')
     
 #prevents executing classes, only running main    
 
 
 if __name__ == '__main__':  
-    coinlog = main()
-    print(coinlog)
-    filePath = 'coinlog.txt'
-    sys.stdout = open(filePath,'w')
-    print(str(coinlog))
+    main()
