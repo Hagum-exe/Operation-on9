@@ -149,21 +149,24 @@ def main():
        blockchain.mine(block)  #calling mine function to find previous block's hash
  
     
-    empty = ''
+    numberStore = ""
     
     for block in blockchain.chain:
         
         print(block)
-        print('Num:', blockNumber)
+        numberStore += str(blockNumber)
+        #print('Num:', blockNumber)
         #empty = empty+str(block)
-    #
-    #blockchain.chain[2].data = 'New Data'
-    #blockchain.mine(blockchain.chain[2])
-    #corruption simulation
-    
+   
     
     validity = str(blockchain.isValid()) #call 'isValid' function in blockchain class to check validity
     print(validity)
+    
+    chaincheck = Table('chaincheck', 'number', 'isvalid')
+    for number in numberStore:
+        chaincheck.insert(number, str(validity))
+        
+    
     #return str(f'{validity}!\n{empty}')
     
 #prevents executing classes, only running main    
