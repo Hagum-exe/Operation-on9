@@ -1,7 +1,7 @@
 #from app_test import database
 import mysql.connector
 from tkinter import END  
-from login import SQLdb
+from loginSQL import SQLdb
 
 
 class Table():
