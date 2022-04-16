@@ -30,7 +30,7 @@ class Table():
         data = cursor.fetchall()
         return data
 
-    def selectOne(self, columnName, value):
+    def selectRow(self, columnName, value):
         data = {}
         cursor = SQLdb.cursor()
         results = cursor.execute('SELECT * FROM %s WHERE %s = "%s"' %(self.table, columnName, value))

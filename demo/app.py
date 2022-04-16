@@ -105,7 +105,7 @@ def login():
 
 
 
-#Index page
+#Index pageget
 @app.route("/")
 @app.route("/index")
 def index():

@@ -37,7 +37,7 @@ class Table():
         return result
     
     
-    def selectOne(self, columnName, value):
+    def selectRow(self, columnName, value):
         data = {}
         cursor = SQLdb.cursor()
         results = cursor.execute('SELECT * FROM %s WHERE %s = "%s"' %(self.table, columnName, value))
@@ -50,7 +50,23 @@ class Table():
             
         cursor.close()
         return data
-
+    
+    def selectOneData(self,  searchColumn,columnName, value):  #searchColumn = wanted value's column
+        data = {}
+        cursor = SQLdb.cursor()
+        results = cursor.execute('SELECT %s FROM %s WHERE %s = "%s"' %(searchColumn, self.table, columnName, value))
+        data = cursor.fetchall()
+        cursor.close()
+        if len(data) == 0:
+            return None
+        
+        else:
+            realData = "".join(data[0])
+            return realData
+        
+     
+    
+    
     def deleteOne(self, columnName, value):
         
         cursor = SQLdb.cursor()
@@ -86,4 +102,6 @@ def lastBlockNum():
         blockNumber = int(str(blockNumbers[-1])[2])
         return blockNumber
 
-   
+#users = Table('users', 'name', 'email', 'username', 'password')
+
+#print(users.selectOneData('password','name', 'John'))

@@ -12,7 +12,7 @@ def main():
     #from On9SQLhelpers_test import Table
    
     #users = Table('users', 'name', 'email', 'username', 'password')    #initialize 'Table' with 'users'
-    #print(users.selectOne('name', 'joe'))
+    #print(users.selectRow('name', 'joe'))
     
     cursor = SQLdb.cursor()
     #cursor.execute('CREATE TABLE userTest2(user varchar(20),gmail varchar(20),password varchar(20))')
