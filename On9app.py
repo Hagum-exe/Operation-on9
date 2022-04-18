@@ -22,7 +22,7 @@ def main():
        session['username'] = username
        session['name'] = users.selectOneData('name', 'username', username)
        session['email'] = users.selectOneData('email', 'username', username)
-
+       session['coinmined'] = users
     @app.route("/login", methods = ['GET', 'POST'])
     def login():
     #if form is submitted
@@ -101,20 +101,28 @@ def main():
     def dashboard():
         return render_template('dashboard.html', session=session)
     
+    
+    
+    @app.route("/mine", methods = ['GET', 'POST'])
+    @isLoggedIn
+    def mine():
+        from On9blockchain import main
+     
+        if request.method == 'POST':
+            amount = int(request.form['amount'])
+            main(amount)
+            return redirect("/")
+        return render_template('mine.html')   
+    
+    
     @app.route("/")
     def index():
         return render_template('index.html')
 
 
-    
-    
-    
-    
     app.secret_key = 'the secret key is secret'
     app.run(debug=True)  #run app
 
 
 if __name__ == "__main__":
     main()
-    
-    
