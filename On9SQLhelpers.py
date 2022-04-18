@@ -110,9 +110,7 @@ def lastBlockNum():
         blockNumber = int(str(blockNumbers[-1])[2])
         return blockNumber
 
-#users = Table('users', 'name', 'email', 'username', 'password')
 
-#print(users.selectOneData('password','name', 'John'))
 
 def selectBlock(blockName):
     blockchain = Table('blockchain', 'number', 'hash', 'previous', 'data', 'nonce', 'datetime', 'PIN')

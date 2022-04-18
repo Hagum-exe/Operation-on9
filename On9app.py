@@ -14,7 +14,7 @@ def main():
     
     
     def loginUser(username):
-       users = users = Table("users", "name", "email", "username", "password")
+       users = users = Table("users", "name", "email", "username", "password", 'coinmined')
        
        user = users.selectRow('username', username)
        
@@ -22,7 +22,7 @@ def main():
        session['username'] = username
        session['name'] = users.selectOneData('name', 'username', username)
        session['email'] = users.selectOneData('email', 'username', username)
-       session['coinmined'] = users
+       #session['coinmined'] = users
     @app.route("/login", methods = ['GET', 'POST'])
     def login():
     #if form is submitted
@@ -32,8 +32,8 @@ def main():
             candidate = request.form['password']
 
         #access users table to get the user's actual password
-            users = Table("users", "name", "email", "username", "password")
-            user = users.selectRow("username", username)
+            users = Table("users", "name", "email", "username", "password", 'coinmined')
+            #user = users.selectRow("username", username)
             accPass = users.selectOneData('password', 'username', username)
 
         #if the password cannot be found, the user does not exist
@@ -62,7 +62,7 @@ def main():
     @app.route("/register", methods = ['GET', 'POST'])
     def register():
         form = RegisterForm(request.form)
-        users = Table('users', 'name', 'email', 'username', 'password')
+        users = Table('users', 'name', 'email', 'username', 'password', 'coinmined')
         
         
         
@@ -97,7 +97,7 @@ def main():
     
     
     @app.route("/dashboard")
-    @isLoggedIn
+    #@isLoggedIn
     def dashboard():
         return render_template('dashboard.html', session=session)
     
@@ -111,7 +111,7 @@ def main():
         if request.method == 'POST':
             amount = int(request.form['amount'])
             main(amount)
-            return redirect("/")
+            return redirect("dashboard")
         return render_template('mine.html')   
     
     
