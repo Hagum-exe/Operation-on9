@@ -67,13 +67,19 @@ class Table():
      
     
     
-    def deleteOne(self, columnName, value):
+    def deleteOneRow(self, columnName, value):
         
         cursor = SQLdb.cursor()
         cursor.execute('DELETE from %s where %s = "%s"' %(self.table, columnName, value))
         SQLdb.commit()
         cursor.close()
         
+    def deleteAllFromTable(self):
+        cursor = SQLdb.cursor()
+        cursor.execute("DELETE FROM %s" % self.table)
+        SQLdb.commit()
+        cursor.close()
+    
     def drop(self):
         cursor = SQLdb.cursor()
         cursor.execute("DROP TABLE %s" %self.table)
@@ -86,7 +92,9 @@ def isnewuser(username):
     
     realUserName = tuple(map(str, username.split()))
     
-    if realUserName in usernamesList: 
+    if usernamesList == []:
+        return False
+    elif realUserName in usernamesList : 
         return False 
     else: 
         return True
@@ -105,3 +113,16 @@ def lastBlockNum():
 #users = Table('users', 'name', 'email', 'username', 'password')
 
 #print(users.selectOneData('password','name', 'John'))
+
+def selectBlock(blockName):
+    blockchain = Table('blockchain', 'number', 'hash', 'previous', 'data', 'nonce', 'datetime', 'PIN')
+    
+    block = blockchain.selectRow('data',blockName)
+    return block
+
+def deleteBlockchain (*blockNames):
+    blockchain = Table('blockchain', 'number', 'hash', 'previous', 'data', 'nonce', 'datetime', 'PIN')
+    
+    for blockName in blockNames:
+        blockchain.deleteOneRow('data',blockName)
+

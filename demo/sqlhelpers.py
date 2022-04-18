@@ -49,7 +49,7 @@ class Table():
         cur.close(); return data
 
     #delete a value from the table based on column's data
-    def deleteone(self, search, value):
+    def deleteOneRow(self, search, value):
         cur = SQLdb.connection.cursor()
         cur.execute("DELETE from %s where %s = \"%s\"" %(self.table, search, value))
         SQLdb.connection.commit(); cur.close()

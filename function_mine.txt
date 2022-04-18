@@ -1,0 +1,11 @@
+@app.route("/mine", methods = ['GET', 'POST'])
+    def mine():
+        from On9blockchain import main
+     
+        if request.method == 'POST':
+            amount = int(request.form['amount'])
+            main(amount)
+            return redirect('')
+        return render_template('mine.html')   
+    
+    

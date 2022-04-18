@@ -44,7 +44,7 @@ class Table():
         cursor.close()
         return data
 
-    def deleteOne(self, columnName, value):
+    def deleteOneRow(self, columnName, value):
         
         cursor = SQLdb.cursor()
         cursor.execute('DELETE from %s where %s = "%s"' %(self.table, columnName, value))

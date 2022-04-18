@@ -8,7 +8,7 @@ from datetime import datetime
 
 from On9SQLhelpers import *
 
-minBlockNum = lastBlockNum() + 1
+
 #read from MySQL database 'crypto' table 'blockchain'
 
 
@@ -134,13 +134,17 @@ def datastore(max):
     return Database   #return variable to global
   
         
-def main():
+def main(amount):
+    global minBlockNum
+    minBlockNum = lastBlockNum() + 1
+    number = minBlockNum-1
+    
     blockchain = BlockChain()
-    coins = int(input('Enter number of coins wanted:'))
+    coins = amount
     
     database = datastore(coins) #database is a list
     
-    number = minBlockNum-1
+    
     
     #assign each hash / block 's number
     for data in database: 
@@ -173,4 +177,5 @@ def main():
 
 
 if __name__ == '__main__':  
-    main()
+    coinwanted = int(input('Enter number of coins wanted:'))
+    main(coinwanted)
