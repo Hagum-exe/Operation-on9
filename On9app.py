@@ -1,7 +1,7 @@
 
 from flask import Flask , render_template, flash, redirect, url_for, session,  request, logging
 from passlib.hash import sha256_crypt
-
+from functools import wraps
 from forms import *
 from On9SQLhelpers import *
 def main():
@@ -10,6 +10,9 @@ def main():
     
     app = Flask(__name__)
 
+    
+    
+    
     def loginUser(username):
        users = users = Table("users", "name", "email", "username", "password")
        
@@ -36,7 +39,7 @@ def main():
         #if the password cannot be found, the user does not exist
             if accPass is None:
                 flash("Username is not found", 'danger')
-                return render_template('login.html')
+                return redirect('/login')
             else:
              #verify that the password entered matches the actual password
                 if sha256_crypt.verify(candidate, accPass):
@@ -47,15 +50,14 @@ def main():
                 else:
                  #if the passwords do not match
                     flash("Invalid password", 'danger')
-                    return render_template('login.html')
+                    return redirect('/login')
         return render_template('login.html')
  
     @app.route("/logout")
     def logout():
         session.clear()
         flash('Logout Success', 'success')
-        return render_template('login.html')
-    
+        return redirect('/login')
     
     @app.route("/register", methods = ['GET', 'POST'])
     def register():
@@ -75,15 +77,29 @@ def main():
             
                 password = sha256_crypt.encrypt (form.password.data)   #collect and encrypt password
                 users.insert(name, email, username, password)     #log to MySQL database
-                return render_template('dashboard.html')
+                return redirect('/dashboard')
         
             else:
                 flash('User already exists', 'danger')
-                return render_template('register.html')
+                return redirect('/register')
         
         return render_template('register.html', form=form)
    
-
+    def isLoggedIn(f):
+        @wraps(f)
+        def wrap(*args, **kwargs):
+            if 'logged_in' in session:
+                return f(*args, **kwargs)
+            else:
+                flash("Unauthorized, please login.", "danger")
+                return redirect(url_for('login'))
+        return wrap
+    
+    
+    @app.route("/dashboard")
+    @isLoggedIn
+    def dashboard():
+        return render_template('dashboard.html', session=session)
     
     @app.route("/")
     def index():
