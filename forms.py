@@ -1,3 +1,5 @@
+#form helper file for taking in data from website
+
 from wtforms import Form, StringField, DecimalField, IntegerField, TextAreaField, PasswordField, validators
 
 class RegisterForm(Form):
@@ -7,4 +9,4 @@ class RegisterForm(Form):
     password = PasswordField('Password', [validators.DataRequired(), validators.EqualTo('confirm', message='Passwords do not match' )])
     confirm = PasswordField('Confirm Password')
     
-    amount= StringField('amount')
+    amount= StringField('amount')  #amount count for mining coins

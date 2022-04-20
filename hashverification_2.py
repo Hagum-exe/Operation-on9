@@ -4,14 +4,14 @@ from tkinter import END
 
 
 
-def logcompare(org, blockchainData):
+def logcompare(org, blockchainData):   #compares the input PIN and the real PIN
     global coinPIN
     
     
     for i in range (1,len(blockchainData)-1):
       
         block = blockchainData[i]
-        dataOfBlock = list(block.split(';'))
+        dataOfBlock = list(block.split(';'))  
         blockNumber = i
         #print(blockNumber)
         blockHash = dataOfBlock[1][7:]

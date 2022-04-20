@@ -1,7 +1,8 @@
+#used in 'On9SQLhelpers' to login to local host root user mysql database
 import mysql.connector
 
 SQLdb = SQLdb = mysql.connector.connect(
     user = 'root',
     password = 'dwjk7158',
     host = 'localhost',
-    database = 'crypto')
+    database = 'crypto')    #connects to mysql database

@@ -1,10 +1,11 @@
-#from app_test import database
+#function file for 'On9app'
+#mainly SQL functions 
 import mysql.connector
 from tkinter import END  
 from loginSQL import SQLdb
 
 
-class Table():
+class Table():         #Table class to get 'table_name' and 'columns' for more convenient function building
   
     def __init__(self, table_name, *args):
         self.table = table_name
@@ -12,9 +13,8 @@ class Table():
         self.columnsList = args
         
         
-    def insert(self, *data):
-        #from mysql_connect import SQLdb
-        #print(str(data))
+    def insert(self, *data):          #insert function for adding data to table
+        
         create_data =""
         for datum in data:
             create_data += f"'{datum}',"
@@ -23,13 +23,13 @@ class Table():
         SQLdb.commit()
         cursor.close()
     
-    def selectAll(self):
+    def selectAll(self):          #select all from the table and returns all data
         cursor = SQLdb.cursor()
         result = cursor.execute("SELECT * FROM %s" %self.table)
         data = cursor.fetchall()
         return data
 
-    def selectColumn(self, columnName):
+    def selectColumn(self, columnName):   #select specific column from table
         cursor = SQLdb.cursor()
         cursor.execute("SELECT %s FROM %s" % (columnName, self.table))
         result = cursor.fetchall()
@@ -37,7 +37,7 @@ class Table():
         return result
     
     
-    def selectRow(self, columnName, value):
+    def selectRow(self, columnName, value):   #select a row from table, can belong to users or blocks
         data = {}
         cursor = SQLdb.cursor()
         results = cursor.execute('SELECT * FROM %s WHERE %s = "%s"' %(self.table, columnName, value))
@@ -50,9 +50,10 @@ class Table():
             
         cursor.close()
         return data
-    
+                                                               #select a specific data from the table
+                                                               #'SELECT wanted_column FROM table where column = conditional value
     def selectOneData(self,  searchColumn,columnName, value):  #searchColumn = wanted value's column
-        data = {}
+        data = {}       
         cursor = SQLdb.cursor()
         results = cursor.execute('SELECT %s FROM %s WHERE %s = "%s"' %(searchColumn, self.table, columnName, value))
         data = cursor.fetchall()
@@ -67,25 +68,28 @@ class Table():
      
     
     
-    def deleteOneRow(self, columnName, value):
+    def deleteOneRow(self, columnName, value):    #delete a single row from the table
         
         cursor = SQLdb.cursor()
         cursor.execute('DELETE from %s where %s = "%s"' %(self.table, columnName, value))
         SQLdb.commit()
         cursor.close()
         
-    def deleteAllFromTable(self):
+    def deleteAllFromTable(self):   #delete all data from table but keeps table
         cursor = SQLdb.cursor()
         cursor.execute("DELETE FROM %s" % self.table)
         SQLdb.commit()
         cursor.close()
-    
-    def drop(self):
+     
+    def drop(self):               #delete the whole table including all data
         cursor = SQLdb.cursor()
         cursor.execute("DROP TABLE %s" %self.table)
         cursor.close()
+
+#end of class Table 
+ 
         
-def isnewuser(username):
+def isnewuser(username):           #check if username is a new user
     #access the users table and get all values from column "username"
     users = Table("users", "name", "email", "username", "password")
     usernamesList = (users.selectColumn('username'))
@@ -99,7 +103,8 @@ def isnewuser(username):
     else: 
         return True
     
-def lastBlockNum():
+
+def lastBlockNum():    #gets the last block number from the 'blockchain' table
     blockchain = Table('blockchain', 'number', 'hash', 'previous', 'data', 'nonce', 'datetime', 'PIN')
     
     blockNumbers = blockchain.selectColumn('number')
@@ -112,13 +117,14 @@ def lastBlockNum():
 
 
 
-def selectBlock(blockName):
+def selectBlock(blockName):   #gets a block according to its name
     blockchain = Table('blockchain', 'number', 'hash', 'previous', 'data', 'nonce', 'datetime', 'PIN')
     
     block = blockchain.selectRow('data',blockName)
     return block
 
-def deleteBlockchain (*blockNames):
+
+def deleteBlockchain (*blockNames):  #delete a specific block from the Table
     blockchain = Table('blockchain', 'number', 'hash', 'previous', 'data', 'nonce', 'datetime', 'PIN')
     
     for blockName in blockNames:

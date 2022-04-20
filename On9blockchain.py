@@ -60,7 +60,7 @@ class Block():
     def __str__(self):                                                                                                    #function2
         blockchain = Table('blockchain', 'number', 'hash', 'previous', 'data', 'nonce', 'datetime', 'PIN')
         blockchain.insert(self.number, self.hash(), self.previous_hash, self.data, self.nonce, str(self.datetime), self.PINhash())
-        
+        #insert blockchain data into table 'blockchain' 
        
         
         global blockNumber
@@ -168,7 +168,7 @@ def main(amount):
     
     chaincheck = Table('chaincheck', 'number', 'isvalid')
     for number in numberStore:
-        chaincheck.insert(number, str(validity))
+        chaincheck.insert(number, str(validity))     #insert number of blocks and its corresponding validity
         
     
     #return str(f'{validity}!\n{empty}')
