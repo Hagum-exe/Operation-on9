@@ -22,7 +22,7 @@ def main():
        session['username'] = username
        session['name'] = users.selectOneData('name', 'username', username)
        session['email'] = users.selectOneData('email', 'username', username)
-       #session['coinmined'] = users
+       session['coinmined'] = users.selectOneData('coinmined', 'username', username)
     
     
     @app.route("/login", methods = ['GET', 'POST'])  #URL and corresponding function for its functions
@@ -30,6 +30,7 @@ def main():
     #if form is submitted
         if request.method == 'POST':        #if button is clicked
         #collect form data
+            global loginUsername
             username = request.form['username']  #collect login data
             candidate = request.form['password']
 
@@ -49,6 +50,7 @@ def main():
                   #log in the user and redirect to Dashboard page
                     loginUser(username)
                     flash('You are now logged in.', 'success')  #shows data of successfully logging in
+                    loginUsername = username
                     return render_template('dashboard.html')    #return the dashboard for the user
                 else:
                  #if the passwords do not match
@@ -70,14 +72,14 @@ def main():
         #if form is submitted
         if request.method == 'POST' and form.validate():  #if button is clicked
         
-            username = form.username.data  #collect form data entered in the webpage
+            newusername = form.username.data  #collect form data entered in the webpage
             email = form.email.data
             name = form.name.data
             
-            if isnewuser(username) == True:  #if user is newuser
+            if isnewuser(newusername) == True:  #if user is newuser
             
                 password = sha256_crypt.encrypt (form.password.data)   #collect and encrypt password
-                users.insert(name, email, username, password)     #log to MySQL database
+                users.insert(name, email, newusername, password, '0')     #log to MySQL database
                 return redirect('/dashboard')                     #redirect to dashboard page
         
             else:
@@ -111,7 +113,13 @@ def main():
      
         if request.method == 'POST':            #if button is clicked
             amount = int(request.form['amount'])  #get the amount wanter(entered in the web page)
-            main(amount)                         #mines the block and loggs their data into mysql 'blockchain' table
+            main(amount)                         #mines the block and loggs their data into mysql 
+            
+            users = Table("users", "name", "email", "username", "password", 'coinmined')
+            coinmined = int(users.selectOneData('coinmined', 'username', loginUsername))
+            coinmined += amount
+            users.updateData('coinmined', str(coinmined), 'username',loginUsername )
+            
             return redirect("dashboard")
         return render_template('mine.html')    
     

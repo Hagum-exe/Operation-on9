@@ -12,7 +12,12 @@ class Table():         #Table class to get 'table_name' and 'columns' for more c
         self.columns = "(%s)" %",".join(args)
         self.columnsList = args
         
-        
+    def updateData(self,setColumn, newValue,  searchColumn ,searchValue):
+        cursor = SQLdb.cursor()
+        cursor.execute('UPDATE %s SET %s="%s" WHERE %s="%s"' %(self.table, setColumn, newValue, searchColumn, searchValue))
+        SQLdb.commit()
+        cursor.close()    
+    
     def insert(self, *data):          #insert function for adding data to table
         
         create_data =""
