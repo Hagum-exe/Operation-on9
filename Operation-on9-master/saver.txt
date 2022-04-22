@@ -1,0 +1,8 @@
+with open('sql_pw.txt') as f:
+    pw = f.read()
+
+
+#import coinlog data of coins
+with open('coinlog.txt') as f:
+    coinlog = f.read()
+#
