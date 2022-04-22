@@ -4,6 +4,11 @@ import mysql.connector
 from tkinter import END  
 from loginSQL import SQLdb
 
+class InvalidTransactionException():
+    pass
+
+class InsufficientFundsException():
+    pass
 
 class Table():         #Table class to get 'table_name' and 'columns' for more convenient function building
   
@@ -134,4 +139,41 @@ def deleteBlockchain (*blockNames):  #delete a specific block from the Table
     
     for blockName in blockNames:
         blockchain.deleteOneRow('data',blockName)
+        
+def getBlockchain():
+    #blockchain = Blockchain()
+    blockchainSQL = Table("blockchain", "number", "hash", "previous", "data", "nonce", "datetime", "PIN")
+    
+    for block in blockchainSQL.selectAll():
+        print(block, "\n")
+       
 
+
+def deleteBlockchain (*blockNames):  #delete a specific block from the Table
+    blockchain = Table('blockchain', 'number', 'hash', 'previous', 'data', 'nonce', 'datetime', 'PIN', 'transData')
+    
+    for blockName in blockNames:
+        blockchain.deleteOneRow('data',blockName)
+
+def getBalance(username):
+    users =  Table("users", "name", "email", "username", "password", 'coinmined', 'balance')
+    balance = str(users.selectOneData('balance', 'username', username))
+    return int(balance[3])
+     
+     
+def sendCoin(sender, recipient, amount): 
+    try:
+        amount = float(amount)
+    except ValueError:
+        raise InvalidTransactionException('Invalid Transaction data type.')
+    
+    if amount > getBalance(sender) and sender != 'admin_user':
+        raise InsufficientFundsException('Insufficient funds.')
+    
+    elif sender == recipient or amount <=0.00:
+        raise InvalidTransactionException('Invalid Transaction')
+  
+    elif isnewuser(recipient):
+        raise InvalidTransactionException('Sender Does Not exist')
+    
+    

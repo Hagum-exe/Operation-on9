@@ -58,8 +58,8 @@ class Block():
        
            
     def __str__(self):                                                                                                    #function2
-        blockchain = Table('blockchain', 'number', 'hash', 'previous', 'data', 'nonce', 'datetime', 'PIN')
-        blockchain.insert(self.number, self.hash(), self.previous_hash, self.data, self.nonce, str(self.datetime), self.PINhash())
+        blockchain = Table('blockchain', 'number', 'hash', 'previous', 'data', 'nonce', 'datetime', 'PIN', 'transData')
+        blockchain.insert(self.number, self.hash(), self.previous_hash, self.data, self.nonce, str(self.datetime), self.PINhash(), 'admin_user')
         #insert blockchain data into table 'blockchain' 
        
         
