@@ -14,7 +14,7 @@ def main():
     
     
     def loginUser(username):   #login function that gets the details of the user
-       users = users = Table("users", "name", "email", "username", "password", 'coinmined')
+       users = Table("users", "name", "email", "username", "password")
        
        user = users.selectRow('username', username)
        
@@ -22,8 +22,7 @@ def main():
        session['username'] = username
        session['name'] = users.selectOneData('name', 'username', username)
        session['email'] = users.selectOneData('email', 'username', username)
-       session['coinmined'] = users.selectOneData('coinmined', 'username', username)
-    
+       session['balance'] = getBalance(username)
     
     @app.route("/login", methods = ['GET', 'POST'])  #URL and corresponding function for its functions
     def login():
@@ -99,35 +98,57 @@ def main():
         return wrap
     
     
+    #transaction page
+    @app.route('/transaction', methods = ['GET', 'POST'])
+    @isLoggedIn
+    def transaction():
+        form = SendMoneyForm(request.form)
+        balance = getBalance(session.get('username'))
+        
+        if request.method == 'POST':
+            try: 
+                sendMoney(session.get('username'), form.username.data, form.amount.data)
+                flash('Money sent, transaction successful', 'success')
+            except Exception as e:
+                flash(str(e), 'danger')
+        
+            return redirect('/transaction')
+        
+        return (render_template('transaction.html', balance=balance, form=form))
+      
+    #######################################################   
+    #buy page
+    @app.route('/buy', methods=['GET', 'POST'])
+    @isLoggedIn
+    def buy():
+        form = BuyForm(request.form)
+        balance = getBalance(session.get('username'))
+        
+        if request.method == 'POST':
+            try: 
+                sendMoney('On9admin', session.get('username'), form.amount.data)
+                flash('Purchase Successful', 'success')
+            except Exception as e:
+                flash(str(e), 'danger')
+        
+            return redirect('/dashboard')
+        
+        return render_template('buy.html', balance=balance, form=form)
+        
+        
+    
+    #dashboard page
     @app.route("/dashboard")         #dashboard page
     @isLoggedIn                      #ensure that user is logged in
     def dashboard():
+        balance = getBalance(session.get('username'))
         return render_template('dashboard.html', session=session)
-    
-    
-    
-    @app.route("/mine", methods = ['GET', 'POST'])  #mining page
-    @isLoggedIn                                    #ensure that user is logged in
-    def mine():
-        from On9blockchain import main  
-     
-        if request.method == 'POST':            #if button is clicked
-            amount = int(request.form['amount'])  #get the amount wanter(entered in the web page)
-            main(amount)                         #mines the block and loggs their data into mysql 
-            
-            users = Table("users", "name", "email", "username", "password", 'coinmined')
-            coinmined = int(users.selectOneData('coinmined', 'username', loginUsername))
-            coinmined += amount
-            users.updateData('coinmined', str(coinmined), 'username',loginUsername )
-            
-            return redirect("dashboard")
-        return render_template('mine.html')    
-    
     
     @app.route("/")                 #main page 
     def index():
         return render_template('index.html')  #renders index.html
-
+   
+    ################################################
 
     app.secret_key = 'the secret key is secret'  #secret key for flask
     app.run(debug=True)  #run app

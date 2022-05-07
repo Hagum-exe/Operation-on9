@@ -7,8 +7,7 @@
 {% include 'includes/_messages.html' %}
 <p></p>
 
-<p>Number of On9_coin(s) mined: {{session.get('coinmined')}}</p>
-<p> Your current balance is {{ balance }} On9C</p>
+<p>Your current balance is {{session.get('balance')}} On9C</p>
 <div class="card mb-3">
   <div class="card-header">
     <i class="fas fa-chart-area"></i>

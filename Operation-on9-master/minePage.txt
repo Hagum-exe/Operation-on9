@@ -1,0 +1,16 @@
+@app.route("/mine", methods = ['GET', 'POST'])  #mining page
+    @isLoggedIn                                    #ensure that user is logged in
+    def mine():
+        from On9blockchain import main  
+     
+        if request.method == 'POST':            #if button is clicked
+            amount = int(request.form['amount'])  #get the amount wanter(entered in the web page)
+            main(amount)                         #mines the block and loggs their data into mysql 
+            
+            users = Table("users", "name", "email", "username", "password", 'coinmined')
+            coinmined = int(users.selectOneData('coinmined', 'username', loginUsername))
+            coinmined += amount
+            users.updateData('coinmined', str(coinmined), 'username',loginUsername )
+            
+            return redirect("dashboard")
+        return render_template('mine.html')    

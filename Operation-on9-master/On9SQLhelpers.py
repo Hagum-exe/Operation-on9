@@ -3,7 +3,7 @@
 import mysql.connector
 from tkinter import END  
 from loginSQL import SQLdb
-
+from On9blockchain import Block, Blockchain
 class InvalidTransactionException():
     pass
 
@@ -115,7 +115,7 @@ def isnewuser(username):           #check if username is a new user
     
 
 def lastBlockNum():    #gets the last block number from the 'blockchain' table
-    blockchain = Table('blockchain', 'number', 'hash', 'previous', 'data', 'nonce', 'datetime', 'PIN')
+    blockchain = Table('blockchain', 'number', 'hash', 'previous', 'data', 'nonce', 'datetime')
     
     blockNumbers = blockchain.selectColumn('number')
 
@@ -128,39 +128,74 @@ def lastBlockNum():    #gets the last block number from the 'blockchain' table
 
 
 def selectBlock(blockName):   #gets a block according to its name
-    blockchain = Table('blockchain', 'number', 'hash', 'previous', 'data', 'nonce', 'datetime', 'PIN')
+    blockchain = Table('blockchain', 'number', 'hash', 'previous', 'data', 'nonce', 'datetime')
     
     block = blockchain.selectRow('data',blockName)
     return block
 
+def selectBlockchain():
+    
+    blockchain = Table('blockchain', 'number', 'hash', 'previous', 'data', 'nonce', 'datetime')
+    allBlockchain = blockchain.selectAll()
+    return allBlockchain
+
 
 def deleteBlockchain (*blockNames):  #delete a specific block from the Table
-    blockchain = Table('blockchain', 'number', 'hash', 'previous', 'data', 'nonce', 'datetime', 'PIN')
+    blockchain = Table('blockchain', 'number', 'hash', 'previous', 'data', 'nonce', 'datetime')
     
     for blockName in blockNames:
         blockchain.deleteOneRow('data',blockName)
 
 
+
+     
+def getBlockchain():
+    blockchain = Blockchain()
+    blockchainSQL = Table('blockchain', 'number', 'hash', 'previous', 'data', 'nonce', 'datetime')
+    for block in blockchainSQL.selectAll():
+        
+        blockchain.add(Block(int(block[0]), block[2], block[3], int(block[4]), block[5]))
+    return blockchain
+
 def getBalance(username):
-    users =  Table("users", "name", "email", "username", "password", 'coinmined', 'balance')
-    balance = str(users.selectOneData('balance', 'username', username))
-    return int(balance[3])
-     
-     
-def sendCoin(sender, recipient, amount): 
+    balance = 0.00
+    blockchain = getBlockchain()
+
+    #loop through the blockchain and update balance
+    for block in blockchain.chain:
+        data = block.data.split("-->")
+        if username == data[0]:
+            balance -= float(data[2])
+        elif username == data[1]:
+            balance += float(data[2])
+    return balance
+
+def syncBlockChain(blockchain):
+    blockchainSQL = Table('blockchain', 'number', 'hash', 'previous', 'data', 'nonce', 'datetime')     
+    blockchainSQL.deleteAllFromTable()
+    
+    for block in blockchain.chain:
+        blockchainSQL.insert(str(block.number), block.hash(), block.previous_hash, block.data, block.nonce, block.datetime)
+
+def sendMoney(sender, recipient, amount): 
     try:
         amount = float(amount)
     except ValueError:
         raise InvalidTransactionException('Invalid Transaction data type.')
     
-    if amount > getBalance(sender) and sender != 'admin_user':
+    if amount > getBalance(sender) and sender != 'On9admin':
         raise InsufficientFundsException('Insufficient funds.')
     
-    elif sender == recipient or amount <=0.00:
+    if sender == recipient or amount <=0.00:
         raise InvalidTransactionException('Invalid Transaction')
   
     elif isnewuser(recipient):
         raise InvalidTransactionException('Sender Does Not exist')
-    
-    
+    blockchain = getBlockchain()
+    number = lastBlockNum()+1
+    data = "%s-->%s-->%s" %(sender, recipient, str(amount))
+    block = Block(number, data=data)
+    blockchain.mine(block)
+    syncBlockChain(blockchain)
 
+print(getBalance('testman'))

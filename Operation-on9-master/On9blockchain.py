@@ -1,35 +1,20 @@
-#hash is encrypted data of previous_hash,number, data, nonce
-#each block consists of 4 data: previous_hash,number,nonce
-#.chain takes in all iterables and returns 1 iterable as output
-import time
-from hashlib import sha256   #library function for encryption 
-from itertools import chain
+from hashlib import sha256
 from datetime import datetime
+#Takes in any number of arguments and produces a sha256 hash as a result
+def updatehash(*args):
+    hashing_text = ""; h = sha256()
 
-from On9SQLhelpers import *
-
-
-#read from MySQL database 'crypto' table 'blockchain'
-
-
-
-#updatehash function
-#return encrypted data
-def updatehash(*args):     #exchange args to 64 bit letters
-    hashingText = ''
-    h = sha256()
+    #loop through each argument and hash
     for arg in args:
-        hashingText += str(arg)  #adding each arguments to hashingText
-        
-    h.update(hashingText.encode('utf8')) #using 'utf8' in sha256 to encrypt arguments 
-    return h.hexdigest()                 #returns the encrypted text as hex strings
+        hashing_text += str(arg)
 
-    
-#Block function creating block
-#returns str(hash, previous_hash, data, nonce)
+    h.update(hashing_text.encode('utf-8'))
+    return h.hexdigest()
+
+#The "node" of the blockchain. Points to the previous block by its unique hash in previous_hash.
 class Block():
-    #global Datetime 
- 
+
+    #default data for block defined in constructor. Minimum specified should be number and data.
     Datetime = datetime.now()
     
     #consturctor called to creat an object IN the class Block
@@ -51,57 +36,42 @@ class Block():
             self.data,
             self.nonce,
             self.datetime,)
-   
-    def PINhash(self):
-       return updatehash(self.nonce, self.datetime)
-       
-       
-           
-    def __str__(self):                                                                                                    #function2
-        blockchain = Table('blockchain', 'number', 'hash', 'previous', 'data', 'nonce', 'datetime', 'PIN')
-        blockchain.insert(self.number, self.hash(), self.previous_hash, self.data, self.nonce, str(self.datetime), self.PINhash())
-        #insert blockchain data into table 'blockchain' 
-       
         
-        global blockNumber
-        blockNumber = self.number
-        
-        return str("Block#: %s;\nHash: %s;\nPrevious: %s;\nData: %s;\nNonce: %s;\nDatetime: %s;\nPIN: %s;\n!\n" %(
-            self.number,
-            self.hash(),
-            self.previous_hash,
-            self.data,
-            self.nonce,
-            str(self.datetime),
-            self.PINhash()
-            )
-        )
-                                                         #gives encrypted hash text with Hash:
-class BlockChain():
-    
-    difficulty = 4  #produces 4 0s at the front of the hash
-    
-    
+
+
+#The "LinkedList" of the blocks-- a chain of blocks.
+class Blockchain():
+    #the number of zeros in front of each hash
+    difficulty = 4
+
+    #restarts a new blockchain or the existing one upon initialization
     def __init__(self):
-        self.chain = []   #it is a list         [''hi', 'i am'', ''hallee', 'joshua'']
-   #add chain to constructor if chain exists
-        
-    def add(self, block):    #define what adding a block to a chain looks like
-        self.chain.append(block) #put each single block data into chain 
+        self.chain = []
+
+    #add a new block to the chain
+    def add(self, block):
+        self.chain.append(block)
+
+    #remove a block from the chain
+    def remove(self, block):
+        self.chain.remove(block)
+
+    #find the nonce of the block that satisfies the difficulty and add to chain
     def mine(self, block):
-       
-       try: block.previous_hash = self.chain[-1].hash()  #get the last Hash of the last chain
-        
-       except IndexError: pass
-             #pass if there is no previous hash / blockY
-        
-       while True:
-            if block.hash()[:self.difficulty] == "0" * self.difficulty: #try to make the hash start with four zero
+        #attempt to get the hash of the previous block.
+        #this should raise an IndexError if this is the first block.
+        try: block.previous_hash = self.chain[-1].hash()
+        except IndexError: pass
+
+        #loop until nonce that satisifeis difficulty is found
+        while True:
+            if block.hash()[:self.difficulty] == "0" * self.difficulty:
                 self.add(block); break
-                
-            else:  #else add 1 to nonce                                  if can't nonce += 1
-                block.nonce +=1
-                
+            else:
+                #increase the nonce by one and try again
+                block.nonce += 1
+
+    #check if blockchain is valid
     def isValid(self):
         #loop through blockchain
         for i in range(1,len(self.chain)):
@@ -112,70 +82,4 @@ class BlockChain():
                 return False
 
         return True
-                
-  
-def datastore(max):
-   
-    DatabaseStr = ''
-    for i in range (minBlockNum,minBlockNum+max):
-        data = '-on9_'+str(i)       #-on9_1    #-on9_2   #-on9_3
 
-        DatabaseStr = DatabaseStr + data
-      # databaseStr = -on9_1-on9_2-on9_3
-    Database =  list(DatabaseStr.split('-')) 
-    Database.remove('')
-    empty = ''
-    for data in Database:
-        empty = empty + data + ' '
-        
-    print(empty)
-          
-    
-    return Database   #return variable to global
-  
-        
-def main(amount):
-    global minBlockNum
-    minBlockNum = lastBlockNum() + 1
-    number = minBlockNum-1
-    
-    blockchain = BlockChain()
-    coins = amount
-    
-    database = datastore(coins) #database is a list
-    
-    
-    
-    #assign each hash / block 's number
-    for data in database: 
-       number += 1
-       block = Block(number, data=data)
-       blockchain.mine(block)  #calling mine function to find previous block's hash
- 
-    
-    numberStore = ""
-    
-    for block in blockchain.chain:
-        
-        print(block)
-        numberStore += str(blockNumber)
-        #print('Num:', blockNumber)
-        #empty = empty+str(block)
-   
-    
-    validity = str(blockchain.isValid()) #call 'isValid' function in blockchain class to check validity
-    print(validity)
-    
-    chaincheck = Table('chaincheck', 'number', 'isvalid')
-    for number in numberStore:
-        chaincheck.insert(number, str(validity))     #insert number of blocks and its corresponding validity
-        
-    
-    #return str(f'{validity}!\n{empty}')
-    
-#prevents executing classes, only running main    
-
-
-if __name__ == '__main__':  
-    coinwanted = int(input('Enter number of coins wanted:'))
-    main(coinwanted)
