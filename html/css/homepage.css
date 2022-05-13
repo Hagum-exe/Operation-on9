@@ -1,0 +1,79 @@
+#head{
+    font-size: 50px;
+    
+}
+#headprice{
+    font-size:25px;
+}
+#head2{
+    font-size:30px;
+    /*color:#00ffff;*/
+}
+#facebook {
+    /*padding & margin-xxxx   */
+    margin-top:5px;
+    margin-right:50px;
+    float:right; 
+}
+#youtube {
+    margin-top:-2px;
+    float:right;
+}
+.press{
+
+    background-color:cadetblue;
+}
+#outside{
+
+    height:350px;
+    padding-left:300px;
+    padding-right:300px;
+    padding-top:10px;
+    padding-bottom:25px;
+}
+#inside{
+    background-color:#e1b156;
+    width:40%;
+    height:300px;
+    display:inline-block;
+    float:left;
+    text-align:center;
+}
+#inside2{
+    background-color:#e1b156;
+    width:40%;
+    height:300px;
+    display:inline-block;
+    float:right;
+    text-align:center;
+}
+#mainButton{
+    width:40%;
+    height:300px;
+}
+#bigger{
+    font-size:50px;
+    color:#ffffb3;
+
+}
+#opinion{
+    width:100px;
+    background-color:#ffff80;
+
+}
+#opinions{
+    height:50px;
+    text-align:center;
+    border:1px solid black;
+    padding-top:20px;
+}
+body div div span{
+    color:coral;
+    font-size:20px;
+}
+body{
+    background-color:#dedeb5;
+}
+:link{
+    text-decoration:none;
+}
