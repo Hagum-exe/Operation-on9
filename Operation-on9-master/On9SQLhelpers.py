@@ -148,7 +148,7 @@ def deleteBlockchain (*blockNames):  #delete a specific block from the Table
 
 
 
-     
+
 def getBlockchain():
     blockchain = Blockchain()
     blockchainSQL = Table('blockchain', 'number', 'hash', 'previous', 'data', 'nonce', 'datetime')
@@ -188,7 +188,8 @@ def sendMoney(sender, recipient, amount):
     
     if sender == recipient or amount <=0.00:
         raise InvalidTransactionException('Invalid Transaction')
-  
+    elif amount >100:
+        raise InvalidTransactionException('Exceeding value')
     elif isnewuser(recipient):
         raise InvalidTransactionException('Sender Does Not exist')
     blockchain = getBlockchain()
@@ -198,4 +199,3 @@ def sendMoney(sender, recipient, amount):
     blockchain.mine(block)
     syncBlockChain(blockchain)
 
-print(getBalance('testman'))
