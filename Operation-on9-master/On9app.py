@@ -10,9 +10,9 @@ def main():
     
     app = Flask(__name__)  #initialize flask function to start webpage
 
-    
-    
-    
+  
+
+
     def loginUser(username):   #login function that gets the details of the user
        users = Table("users", "name", "email", "username", "password")
        
